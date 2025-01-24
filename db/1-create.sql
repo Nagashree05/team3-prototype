@@ -3,7 +3,7 @@ CREATE DATABASE IF NOT EXISTS Discreta;
 USE Discreta;
 
 CREATE TABLE IF NOT EXISTS ADMIN (
-    AId INTEGER PRIMARY KEY,
+    AId INTEGER AUTO_INCREMENT PRIMARY KEY,
     AEmail VARCHAR(30),
     APassword CHAR(64) NOT NULL
 );
@@ -63,4 +63,21 @@ CREATE TABLE IF NOT EXISTS STUDENT_ATTEMPTS (
     GotCorrect BOOLEAN,
     FOREIGN KEY fk_student_questions_stoken (SToken) REFERENCES STUDENT(SToken),
     FOREIGN KEY fk_student_questions_qid (QId) REFERENCES QUESTIONS(QId)
+);
+
+CREATE TABLE IF NOT EXISTS GAMES (
+    GId INTEGER AUTO_INCREMENT PRIMARY KEY,
+    GName VARCHAR(50) NOT NULL,
+    GDescription VARCHAR(500),
+    GDifficulty VARCHAR(10),
+    CONSTRAINT chk_games_difficulty CHECK (GDifficulty IN ('Easy', 'Medium', 'Hard'))
+);
+
+CREATE TABLE IF NOT EXISTS GAME_ATTEMPTS (
+    SToken CHAR(64),
+    GId INTEGER,
+    Timestamp DATETIME,
+    GotCorrect BOOLEAN,
+    FOREIGN KEY fk_student_game_attempts_stoken (SToken) REFERENCES STUDENT(SToken),
+    FOREIGN KEY fk_student_game_attempts_gid (GId) REFERENCES GAMES(GId)
 );

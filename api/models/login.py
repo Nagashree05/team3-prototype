@@ -9,7 +9,7 @@ class LoginRequest(BaseModel):
     @field_validator("password", mode="before")
     @classmethod
     def password_before(cls, value: str) -> str:
-        return sha256(value.encode('utf-8')).hexdigest()
+        return sha256(value.encode("utf-8")).hexdigest()
 
 
 class LoginResponse(BaseModel):
