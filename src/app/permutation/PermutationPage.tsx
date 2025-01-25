@@ -59,7 +59,7 @@ export default function PermutationPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen bg-[#d4f8e2] p-6">
+    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-[#96a86c] to-[#5c6b47] p-6">
       <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
         <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
           Permutation Mappings in Discrete Math
