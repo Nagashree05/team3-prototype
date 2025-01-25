@@ -47,7 +47,6 @@ async def run_sql_script(script_path: str):
                 sql_script = file.read()
                 queries = sql_script.split(";")
                 for query in queries:
-                    print(query)
                     query = query.strip()
                     if query:
                         cursor.execute(query)
