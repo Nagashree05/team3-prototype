@@ -8,6 +8,7 @@ from logging import error
 
 from api.consts import STUDENT_TABLE, STUDENT_EMAIL_FIELD, STUDENT_PASSWORD_FIELD
 from api.models.login import LoginRequest, LoginResponse
+from api.models.logout import LogoutRequest, LogoutResponse
 from api.models.student import Student
 from api.models.game import Game
 
@@ -21,6 +22,11 @@ if user is None:
 password = os.getenv("DB_PASSWORD")
 if password is None:
     error("No DB_PASSWORD environment variable found!")
+    exit(1)
+
+auth_token = os.getenv("AUTH_TOKEN")
+if auth_token is None:
+    error("No AUTH_TOKEN environment variable found!")
     exit(1)
 
 
@@ -75,6 +81,10 @@ async def greet():
 @app.post("/login", response_model=LoginResponse)
 async def login(data: LoginRequest):
     resp = LoginResponse(response=None, error=None)
+    if data.auth_token != auth_token:
+        resp.error = "Auth token invalid."
+        return resp
+
     async with get_db_connection() as db:
         with db.cursor() as cursor:
             query = f"SELECT * FROM {STUDENT_TABLE} WHERE {STUDENT_EMAIL_FIELD} = '{
@@ -86,7 +96,7 @@ async def login(data: LoginRequest):
                     data.email} authenticated with {data.password} found."
                 return resp
 
-    student = Student(email=data.email, password=data.password)
+    student = Student(email=data.email)
     if student in logged_in_students:
         resp.error = "Student already logged in."
         return resp
@@ -94,6 +104,23 @@ async def login(data: LoginRequest):
     logged_in_students.add(student)
     resp.response = f"Student with credentials {
         data.email} authenticated with {data.password} logged in."
+    return resp
+
+
+@app.post("/logout", response_model=LogoutResponse)
+async def logout(data: LogoutRequest):
+    resp = LogoutResponse(response=None, error=None)
+    if data.auth_token != auth_token:
+        resp.error = "Auth Token invalid."
+        return resp
+
+    student = Student(email=data.email)
+    if student not in logged_in_students:
+        resp.error = f"Student with email {data.email} not logged in."
+        return resp
+
+    logged_in_students.remove(student)
+    resp.response = f"Student with email {data.email} logged out."
     return resp
 
 

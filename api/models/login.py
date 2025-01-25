@@ -3,6 +3,7 @@ from hashlib import sha256
 
 
 class LoginRequest(BaseModel):
+    auth_token: str
     email: str
     password: str
 
