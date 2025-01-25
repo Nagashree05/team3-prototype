@@ -6,11 +6,14 @@ from contextlib import asynccontextmanager
 from typing import List
 from logging import error
 
-from api.consts import STUDENT_TABLE, STUDENT_EMAIL_FIELD, STUDENT_PASSWORD_FIELD
+from api.consts import STUDENT_NAME_FIELD, STUDENT_TABLE, STUDENT_EMAIL_FIELD, STUDENT_PASSWORD_FIELD
 from api.models.login import LoginRequest, LoginResponse
 from api.models.logout import LogoutRequest, LogoutResponse
+from api.models.signup import SignupRequest, SignupResponse
 from api.models.student import Student
 from api.models.game import Game
+from hashlib import sha256
+from random import randint
 
 dotenv.load_dotenv()
 
@@ -121,6 +124,40 @@ async def logout(data: LogoutRequest):
 
     logged_in_students.remove(student)
     resp.response = f"Student with email {data.email} logged out."
+    return resp
+
+
+@app.post("/signup", response_model=SignupResponse)
+async def signup(data: SignupRequest):
+    resp = SignupResponse(stoken=None, response=None, error=None)
+    if data.auth_token != auth_token:
+        resp.error = "Auth Token invalid."
+        return resp
+
+    async with get_db_connection() as db:
+        with db.cursor() as cursor:
+            query = f"SELECT * FROM {STUDENT_TABLE} WHERE {STUDENT_NAME_FIELD} = '{data.name}' AND {STUDENT_EMAIL_FIELD} = '{
+                data.email}' AND {STUDENT_PASSWORD_FIELD} = '{data.password}'"
+            cursor.execute(query)
+            res = cursor.fetchall()
+            if len(res) >= 1:
+                resp.error = f"Student already exists with {
+                    data.email} authenticated with {data.password}."
+                return resp
+
+            student_token = sha256(f"{data.name}{randint(
+                0, len(data.name))}".encode("utf-8")).hexdigest()
+            query = f"INSERT INTO {STUDENT_TABLE} VALUES ('{student_token}', '{data.name}', '{
+                data.email}', '{data.password}')"
+            cursor.execute(query)
+            db.commit()
+
+    student = Student(email=data.email)
+    logged_in_students.add(student)
+
+    resp.response = f"Student with email {
+        data.email} authenticated by {data.password} signed up."
+    resp.stoken = student_token
     return resp
 
 

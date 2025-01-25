@@ -28,7 +28,7 @@ def test_login_valid():
     assert hashed_password in res_json["response"]
 
 
-def test_login_invalid():
+def test_login_invalid_auth():
     data = {"auth_token": "",
             "email": "abc@gmail.com", "password": "pqr"}
 
@@ -40,15 +40,31 @@ def test_login_invalid():
     assert res_json["error"] is not None
 
 
-def test_logout_invalid():
+def test_login_invalid_email():
     data = {"auth_token": auth_token,
-            "email": "abc@gmail.com", "password": "pqr"}
+            "email": "abcd@gmail.com", "password": "pqr"}
 
     res = client.post("/login", json=data)
+    res_json = res.json()
 
     assert res.status_code == 200
-    assert res.json()["error"] is None
+    assert res_json["response"] is None
+    assert res_json["error"] is not None
 
+
+def test_login_invalid_password():
+    data = {"auth_token": auth_token,
+            "email": "abc@gmail.com", "password": "pqrs"}
+
+    res = client.post("/login", json=data)
+    res_json = res.json()
+
+    assert res.status_code == 200
+    assert res_json["response"] is None
+    assert res_json["error"] is not None
+
+
+def test_logout_invalid():
     data = {"auth_token": "", "email": "abc@gmail.com"}
 
     res = client.post("/logout", json=data)
@@ -56,4 +72,43 @@ def test_logout_invalid():
 
     assert res.status_code == 200
     assert res_json["response"] is None
+    assert res_json["error"] is not None
+
+
+def test_signup_valid():
+    data = {"auth_token": auth_token, "name": "random",
+            "email": "random@gmail.com", "password": "pass"}
+
+    res = client.post("/signup", json=data)
+    res_json = res.json()
+
+    assert res.status_code == 200
+    assert res_json["error"] is None
+    assert res_json["response"] is not None
+    assert res_json["stoken"] is not None
+
+
+def test_signup_invalid_auth():
+    data = {"auth_token": "", "name": "random",
+            "email": "random@gmail.com", "password": "pass"}
+
+    res = client.post("/signup", json=data)
+    res_json = res.json()
+
+    assert res.status_code == 200
+    assert res_json["response"] is None
+    assert res_json["stoken"] is None
+    assert res_json["error"] is not None
+
+
+def test_signup_invalid_repeated():
+    data = {"auth_token": auth_token, "name": "random",
+            "email": "random@gmail.com", "password": "pass"}
+
+    res = client.post("/signup", json=data)
+    res_json = res.json()
+
+    assert res.status_code == 200
+    assert res_json["response"] is None
+    assert res_json["stoken"] is None
     assert res_json["error"] is not None
