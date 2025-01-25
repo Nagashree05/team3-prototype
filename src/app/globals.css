@@ -1,3 +1,6 @@
+@import url("https://fonts.googleapis.com/css2?family=Jersey+10&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Jockey+One&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -17,5 +20,21 @@
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  /* font-family: Arial, Helvetica, sans-serif; */
+  font-family: "Jockey One", serif;
+  font-weight: 400;
+  font-style: normal;
+  letter-spacing: 0.15em;
+}
+
+.jersey-10-regular {
+  font-family: "Jersey 10", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.jockey-one-regular {
+  font-family: "Jockey One", serif;
+  font-weight: 400;
+  font-style: normal;
 }
