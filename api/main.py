@@ -25,12 +25,12 @@ if password is None:
 
 
 @asynccontextmanager
-async def get_db_connection():
+async def get_db_connection(use_database=True):
     connection = msql.connect(
         user=user,
         password=password,
         host="localhost",
-        database="Discreta",
+        database="Discreta" if use_database else "",
         charset="utf8mb4",
         collation="utf8mb4_general_ci",
     )
@@ -41,12 +41,13 @@ async def get_db_connection():
 
 
 async def run_sql_script(script_path: str):
-    async with get_db_connection() as db:
+    async with get_db_connection(use_database=False) as db:
         with db.cursor() as cursor:
             with open(script_path, "r") as file:
                 sql_script = file.read()
                 queries = sql_script.split(";")
                 for query in queries:
+                    print(query)
                     query = query.strip()
                     if query:
                         cursor.execute(query)
@@ -58,12 +59,13 @@ app = FastAPI()
 logged_in_students = set()
 
 
-@app.on_event("startup")
 async def startup():
     create_script_path = os.path.join(os.getcwd(), "db", "1-create.sql")
     insert_script_path = os.path.join(os.getcwd(), "db", "2-insert.sql")
     await run_sql_script(create_script_path)
     await run_sql_script(insert_script_path)
+
+app.add_event_handler("startup", startup)
 
 
 @app.get("/")
@@ -76,11 +78,13 @@ async def login(data: LoginRequest):
     resp = LoginResponse(response=None, error=None)
     async with get_db_connection() as db:
         with db.cursor() as cursor:
-            query = f"SELECT * FROM {STUDENT_TABLE} WHERE {STUDENT_EMAIL_FIELD} = '{data.email}' AND {STUDENT_PASSWORD_FIELD} = '{data.password}'"
+            query = f"SELECT * FROM {STUDENT_TABLE} WHERE {STUDENT_EMAIL_FIELD} = '{
+                data.email}' AND {STUDENT_PASSWORD_FIELD} = '{data.password}'"
             cursor.execute(query)
             res = cursor.fetchall()
             if len(res) > 1 or len(res) == 0:
-                resp.error = f"No student found with credentials {data.email} authenticated with {data.password} found."
+                resp.error = f"No student found with credentials {
+                    data.email} authenticated with {data.password} found."
                 return resp
 
     student = Student(email=data.email, password=data.password)
@@ -89,7 +93,8 @@ async def login(data: LoginRequest):
         return resp
 
     logged_in_students.add(student)
-    resp.response = f"Student with credentials {data.email} authenticated with {data.password} logged in."
+    resp.response = f"Student with credentials {
+        data.email} authenticated with {data.password} logged in."
     return resp
 
 
