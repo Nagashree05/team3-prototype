@@ -1,26 +1,23 @@
 @import url("https://fonts.googleapis.com/css2?family=Jersey+10&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Jersey+10&family=Jockey+One&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Jockey+One&display=swap");
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
   --foreground: #171717;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
     --foreground: #ededed;
   }
 }
 
 body {
   color: var(--foreground);
-  background: var(--background);
-  /* font-family: Arial, Helvetica, sans-serif; */
+  background: linear-gradient(to bottom, #96a86c, #5c6b47);
   font-family: "Jockey One", serif;
   font-weight: 400;
   font-style: normal;
@@ -29,12 +26,8 @@ body {
 
 .jersey-10-regular {
   font-family: "Jersey 10", serif;
-  font-weight: 400;
-  font-style: normal;
 }
 
 .jockey-one-regular {
   font-family: "Jockey One", serif;
-  font-weight: 400;
-  font-style: normal;
 }

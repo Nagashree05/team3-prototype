@@ -11,8 +11,8 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="bg-[#a65c1c] text-white shadow-md">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <nav className="bg-[#a65c1c] text-white drop-shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 drop-shadow-sm">
         <div className="flex justify-between h-16">
           {/* Left Side: Logo and Links */}
           <div className="flex">
@@ -54,12 +54,12 @@ export default function Navbar() {
             >
               Login
             </Link>
-            <Link
+            {/* <Link
               href="/signup"
               className="ml-4 px-3 py-2 rounded-md text-sm font-medium hover:bg-[#8e4e18]"
             >
               Signup
-            </Link>
+            </Link> */}
           </div>
 
           {/* Mobile Menu Button */}
@@ -133,12 +133,12 @@ export default function Navbar() {
             >
               Login
             </Link>
-            <Link
+            {/* <Link
               href="/signup"
               className="block pl-3 pr-4 py-2 border-l-4 border-transparent text-base font-medium hover:bg-[#8e4e18] hover:border-white"
             >
               Signup
-            </Link>
+            </Link> */}
           </div>
         </div>
       )}

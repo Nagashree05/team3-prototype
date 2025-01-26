@@ -59,52 +59,59 @@ export default function PermutationPage() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen bg-gradient-to-b from-[#96a86c] to-[#5c6b47] p-6">
-      <div className="bg-white shadow-lg rounded-lg p-6 max-w-md w-full">
-        <h1 className="text-2xl font-bold text-center text-gray-800 mb-4">
-          Permutation Mappings in Discrete Math
-        </h1>
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-[#96a86c] to-[#5c6b47] p-6">
+      <div className="flex flex-col md:flex-row bg-[#f7f2d8] shadow-lg rounded-lg p-6 max-w-4xl w-full gap-6">
+        {/* Card Section */}
+        <div className="flex-1">
+          <h1 className="text-2xl font-bold text-center text-[#a65c1c] mb-4">
+            Permutation Mappings in Discrete Math
+          </h1>
 
-        <div className="mb-4">
-          <label className="text-gray-700">Enter the number of elements (n):</label>
-          <input
-            type="number"
-            value={n}
-            onChange={(e) => setN(e.target.value)}
-            placeholder="Enter n"
-            className="border p-2 w-full rounded-md mt-2 bg-gray-100 text-gray-800"
-          />
+          <div className="mb-4">
+            <label className="text-gray-700">Enter the number of elements (n):</label>
+            <input
+              type="number"
+              value={n}
+              onChange={(e) => setN(e.target.value)}
+              placeholder="Enter n"
+              className="border p-2 w-full rounded-md mt-2 bg-gray-100 text-gray-800"
+            />
+          </div>
+
+          <div className="mb-4">
+            <label className="text-gray-700">Enter the numbers (e.g., 1, 2, 3):</label>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Enter numbers separated by commas"
+              className="border p-2 w-full rounded-md mt-2 bg-gray-100 text-gray-800"
+            />
+          </div>
+
+          {error && <p className="text-red-500 mt-2">{error}</p>}
+
+          <button
+            onClick={handleGenerate}
+            className="bg-[#a65c1c] text-white px-4 py-2 rounded-md w-full hover:bg-[#a66c1c] transition"
+          >
+            Generate Permutations
+          </button>
         </div>
 
-        <div className="mb-4">
-          <label className="text-gray-700">Enter the numbers (e.g., 1, 2, 3):</label>
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Enter numbers separated by commas"
-            className="border p-2 w-full rounded-md mt-2 bg-gray-100 text-gray-800"
-          />
-        </div>
-
-        {error && <p className="text-red-500 mt-2">{error}</p>}
-
-        <button
-          onClick={handleGenerate}
-          className="bg-blue-600 text-white px-4 py-2 rounded-md w-full hover:bg-blue-700 transition"
-        >
-          Generate Permutations
-        </button>
-
+        {/* Result Section */}
         {result.length > 0 && (
-          <div className="mt-6">
-            <h2 className="text-lg font-semibold text-center text-gray-800">Permutations:</h2>
+          <div className="flex-1">
+            <h2 className="text-lg font-bold text-center mb-4 text-[#a65c1c]">Permutations:</h2>
             <div
-              className="bg-gray-800 p-3 rounded-md mt-4 max-h-80 overflow-y-auto"
-              style={{ maxHeight: "300px", padding: "10px" }}
+              className="p-3 rounded-md bg-gray-50 border border-gray-200 max-h-80 overflow-y-auto"
+              style={{ maxHeight: '300px' }}
             >
               {result.map((perm, idx) => (
-                <div key={idx} className="p-2 bg-gray-700 text-white mb-2 rounded-md shadow-sm">
+                <div
+                  key={idx}
+                  className="p-2 bg-[#a65c1c] text-white mb-2 rounded-md shadow-sm"
+                >
                   {perm}
                 </div>
               ))}
